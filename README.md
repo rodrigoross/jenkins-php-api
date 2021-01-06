@@ -1,7 +1,7 @@
 Jenkins PHP API
 ===============
 
-This project is a fork of the [jenkins-php-api](https://github.com/jenkins-khan/jenkins-php-api) with come added features and updates since I needed some tweeks on the font code to work on some private repositories.
+This project is a fork of the [jenkins-php-api](https://github.com/jenkins-khan/jenkins-php-api) with some added features and updates since I needed some tweeks on the font code to work on some private repositories.
 
 All credits to the developers on [Jenkins-khan](https://github.com/jenkins-khan) team that created this project.
 
