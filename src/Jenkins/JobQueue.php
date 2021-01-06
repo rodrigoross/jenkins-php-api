@@ -1,8 +1,8 @@
 <?php
 
-namespace JenkinsKhan\Jenkins;
+namespace RodrigoRoss\Jenkins;
 
-use JenkinsKhan\Jenkins;
+use RodrigoRoss\Jenkins;
 
 class JobQueue
 {

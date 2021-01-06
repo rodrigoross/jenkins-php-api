@@ -1,5 +1,5 @@
 <?php
-namespace tests\units\JenkinsKhan\Jenkins;
+namespace tests\units\RodrigoRoss\Jenkins;
 
 require_once __DIR__ . '/../../bootstrap.php';
 
@@ -16,10 +16,10 @@ class TestReport extends atoum\test
 
   public function test__construct()
   {
-    $jenkins    = new \mock\JenkinsKhan\Jenkins('url');
+    $jenkins    = new \mock\RodrigoRoss\Jenkins('url');
 
     $reportJson = json_decode(file_get_contents(__DIR__ . '/report_passed.json'));
-    $report     = new \JenkinsKhan\Jenkins\TestReport($jenkins, $reportJson, $jobName = 'units', $buildNumber = '32');
+    $report     = new \RodrigoRoss\Jenkins\TestReport($jenkins, $reportJson, $jobName = 'units', $buildNumber = '32');
     $this->assert->variable($report->getJobName())->isEqualTo($jobName);
     $this->assert->variable($report->getBuildNumber())->isEqualTo($buildNumber);
     $this->assert->float($report->getDuration())->isEqualTo(0.3716328);
@@ -31,10 +31,10 @@ class TestReport extends atoum\test
 
   public function test_getOriginalTestReport()
   {
-    $jenkins    = new \mock\JenkinsKhan\Jenkins('url');
+    $jenkins    = new \mock\RodrigoRoss\Jenkins('url');
 
     $reportJson = json_decode(file_get_contents(__DIR__ . '/report_passed.json'));
-    $report     = new \JenkinsKhan\Jenkins\TestReport($jenkins, $reportJson, $jobName = 'units', $buildNumber = '32');
+    $report     = new \RodrigoRoss\Jenkins\TestReport($jenkins, $reportJson, $jobName = 'units', $buildNumber = '32');
 
     $this->assert->string($report = $report->getOriginalTestReport())
       ->isNotEmpty()
@@ -51,10 +51,10 @@ class TestReport extends atoum\test
 
   public function test_getSuite()
   {
-    $jenkins    = new \mock\JenkinsKhan\Jenkins('url');
+    $jenkins    = new \mock\RodrigoRoss\Jenkins('url');
 
     $reportJson = json_decode(file_get_contents(__DIR__ . '/report_passed.json'));
-    $report     = new \JenkinsKhan\Jenkins\TestReport($jenkins, $reportJson, $jobName = 'units', $buildNumber = '32');
+    $report     = new \RodrigoRoss\Jenkins\TestReport($jenkins, $reportJson, $jobName = 'units', $buildNumber = '32');
 
     $this->assert->object($suite = $report->getSuite(0))->isInstanceOf('stdClass');
     $this->assert->phpArray($suite->cases)->hasSize(1);
@@ -66,10 +66,10 @@ class TestReport extends atoum\test
    */
   public function testGetSuiteStatusDataProvider($file, $suiteId, $status)
   {
-    $jenkins    = new \mock\JenkinsKhan\Jenkins('url');
+    $jenkins    = new \mock\RodrigoRoss\Jenkins('url');
 
     $reportJson = json_decode(file_get_contents(__DIR__ . '/' . $file));
-    $report     = new \JenkinsKhan\Jenkins\TestReport($jenkins, $reportJson, $jobName = 'units', $buildNumber = '32');
+    $report     = new \RodrigoRoss\Jenkins\TestReport($jenkins, $reportJson, $jobName = 'units', $buildNumber = '32');
 
     $this->assert->string($suite = $report->getSuiteStatus($suiteId))->isEqualTo($status);
   }
