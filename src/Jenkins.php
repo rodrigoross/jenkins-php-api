@@ -257,14 +257,44 @@ class Jenkins
         if ($this->areCrumbsEnabled()) {
             $headers[] = $this->getCrumbHeader();
         }
-
         curl_setopt($curl, \CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, \CURLOPT_HEADERFUNCTION,
+            function($curl, $header) use (&$headers)
+            {
+                $len = strlen($header);
+                $header = explode(':', $header, 2);
+                if (count($header) < 2) // ignore invalid headers
+                    return $len;
+            
+                $headers[strtolower(trim($header[0]))][] = trim($header[1]);
+            
+                return $len;
+            }
+        );
 
         curl_exec($curl);
 
         $this->validateCurl($curl, sprintf('Error trying to launch job "%s" (%s)', $jobName, $url));
+        // print_r($headers);
+        curl_close($curl);
+        
+        $location = $headers['location'];
 
-        return true;
+        /**
+         * Split the url using /, using: http://jenkins.domain.com:8080/queue/item/306/ as example.
+         * Will return a array(7)
+         * array(7
+         *  0	=>	http:
+         *  1	=>	
+         *  2	=>	jenkins.domain.com:8080
+         *  3	=>	queue
+         *  4	=>	item
+         *  5 	=>	306 // Value needed to return queueId to retrieve on queueItem
+         *  6	=>	 
+         * )
+         */
+        $split = preg_split("/\//", $location[0]);
+        return $split[5];
     }
 
     /**
