@@ -1,6 +1,9 @@
 Jenkins PHP API
 ===============
 
+This project is a fork of the [jenkins-php-api](https://github.com/jenkins-khan/jenkins-php-api) with come added features and updates since I needed some tweeks on the font code to work on some private repositories.
+
+All credits to the developers on [Jenkins-khan](https://github.com/jenkins-khan) team that created this project.
 
 Jenkins PHP API is a set of classes designed to interact with Jenkins CI using its API.
 
@@ -53,7 +56,7 @@ Launch a Job
 ```php
     $job = $jenkins->launchJob("clone-deploy");
     var_dump($job);
-    // bool(true) if successful or throws a RuntimeException
+    //Queue Item ID string if successful or throws a RuntimeException
 ```
 
 
