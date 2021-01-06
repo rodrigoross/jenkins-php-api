@@ -1,6 +1,6 @@
 <?php
 
-namespace JenkinsKhan;
+namespace RodrigoRoss;
 
 class Jenkins
 {
@@ -257,20 +257,50 @@ class Jenkins
         if ($this->areCrumbsEnabled()) {
             $headers[] = $this->getCrumbHeader();
         }
-
         curl_setopt($curl, \CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, \CURLOPT_HEADERFUNCTION,
+            function($curl, $header) use (&$headers)
+            {
+                $len = strlen($header);
+                $header = explode(':', $header, 2);
+                if (count($header) < 2) // ignore invalid headers
+                    return $len;
+            
+                $headers[strtolower(trim($header[0]))][] = trim($header[1]);
+            
+                return $len;
+            }
+        );
 
         curl_exec($curl);
 
         $this->validateCurl($curl, sprintf('Error trying to launch job "%s" (%s)', $jobName, $url));
+        // print_r($headers);
+        curl_close($curl);
+        
+        $location = $headers['location'];
 
-        return true;
+        /**
+         * Split the url using /, using: http://jenkins.domain.com:8080/queue/item/306/ as example.
+         * Will return a array(7)
+         * array(7
+         *  0	=>	http:
+         *  1	=>	
+         *  2	=>	jenkins.domain.com:8080
+         *  3	=>	queue
+         *  4	=>	item
+         *  5 	=>	306 // Value needed to return queueId to retrieve on queueItem
+         *  6	=>	 
+         * )
+         */
+        $split = preg_split("/\//", $location[0]);
+        return $split[5];
     }
 
     /**
      * @param string $jobName
      *
-     * @return bool|\JenkinsKhan\Jenkins\Job
+     * @return bool|\RodrigoRoss\Jenkins\Job
      * @throws \RuntimeException
      */
     public function getJob($jobName)
@@ -346,6 +376,38 @@ class Jenkins
         }
 
         return new Jenkins\Queue($infos, $this);
+    }
+
+    /**
+     * @param String $id
+     *
+     * @throws \RuntimeException
+     * @return Jenkins\QueueItem $item
+     */
+    public function getQueueItem($id)
+    {
+        $url = sprintf('%s/queue/item/%s/api/json', $this->baseUrl, $id);
+
+        $curl = curl_init($url);
+        curl_setopt($curl, \CURLOPT_RETURNTRANSFER, 1);
+
+        $headers = array();
+
+        if ($this->areCrumbsEnabled()) {
+            $headers[] = $this->getCrumbHeader();
+        }
+
+        curl_setopt($curl, \CURLOPT_HTTPHEADER, $headers);
+        $ret = curl_exec($curl);
+        
+        $this->validateCurl($curl, sprintf('Error when fetchin queue item #%s', $id));
+
+        $infos = json_decode($ret);
+        if (!$infos instanceof \stdClass) {
+            throw new \RuntimeException('Error during json_decode');
+        }
+        
+        return new Jenkins\QueueItem($infos, $this);
     }
 
     /**

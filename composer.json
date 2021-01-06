@@ -1,13 +1,13 @@
 {
-  "name": "jenkins-khan/jenkins-api",
+  "name": "rodrigoross/jenkins-api",
   "type": "library",
-  "description": "Jenkins PHP API",
+  "description": "Jenkins PHP API with some tweeks",
   "keywords": ["jenkins", "api"],
-  "homepage": "https://github.com/jenkins-khan/jenkins-php-api",
+  "homepage": "https://github.com/rodrigoross/jenkins-php-api",
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "JenkinsKhan\\": "src/"
+      "RodrigoRoss\\": "src/"
     }
   },
   "require-dev": {
@@ -20,6 +20,10 @@
     {
       "name": "jenkins-khan",
       "homepage": "https://github.com/jenkins-khan/jenkins-php-api"
+    },
+    {
+      "name": "rodrigoross",
+      "homepage": "https://github.com/rodrigoross"
     }
   ]
 }
